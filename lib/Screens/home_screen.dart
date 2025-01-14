@@ -11,8 +11,51 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  FileService fileService = FileService();
 
-  FileService fileService=FileService();
+  @override
+  void initState() {
+    super.initState();
+    addListeners();
+  }
+
+  @override
+  void dispose() {
+    removeListeners();
+    super.dispose();
+  }
+
+  void addListeners() {
+    List<TextEditingController> controllers = [
+      fileService.titleController,
+      fileService.descriptionController,
+      fileService.tagsController,
+    ];
+
+    for (TextEditingController controller in controllers) {
+      controller.addListener(_onFieldChanged);
+    }
+  }
+
+  void removeListeners() {
+    List<TextEditingController> controllers = [
+      fileService.titleController,
+      fileService.descriptionController,
+      fileService.tagsController,
+    ];
+
+    for (TextEditingController controller in controllers) {
+      controller.removeListener(_onFieldChanged);
+    }
+  }
+
+  void _onFieldChanged() {
+    setState(() {
+      fileService.fieldNotEmpty = fileService.titleController.text.isNotEmpty &&
+          fileService.descriptionController.text.isNotEmpty &&
+          fileService.tagsController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             SizedBox(
-              height: 20,
+              height: 15,
             ),
             CustomTextfield(
               maxLines: 3,
@@ -47,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: fileService.titleController,
             ),
             SizedBox(
-              height: 40,
+              height: 30,
             ),
             CustomTextfield(
               maxLines: 6,
@@ -56,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: fileService.descriptionController,
             ),
             SizedBox(
-              height: 40,
+              height: 30,
             ),
             CustomTextfield(
               maxLines: 4,
@@ -65,11 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: fileService.tagsController,
             ),
             SizedBox(
-              height: 20,
+              height: 15,
             ),
             Row(
               children: [
-                _mainButton(() => null, "Save File"),
+                _mainButton(
+                    fileService.fieldNotEmpty
+                        ? () => fileService.saveContent(context)
+                        : null,
+                    "Save File"),
               ],
             )
           ],
@@ -97,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onPressed,
         splashColor: AppTheme.accent,
         child: Container(
-          margin: EdgeInsets.all(8.0),
+          margin: EdgeInsets.all(6.0),
           child: Icon(
             size: 30,
             icon,
