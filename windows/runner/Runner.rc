@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "metatube" "\0"
+            VALUE "CompanyName", "YashPratap" "\0"
+            VALUE "FileDescription", "Making Youtube MetaData easier" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "metatube" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 YashPratap. All rights reserved." "\0"
             VALUE "OriginalFilename", "metatube.exe" "\0"
-            VALUE "ProductName", "metatube" "\0"
+            VALUE "ProductName", "MetaTube" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

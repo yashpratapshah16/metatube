@@ -21,11 +21,16 @@ class FileService {
     final tags = tagsController.text;
 
     final textContent =
-        "Title:\n\n$title\n\nDescription$description\n\nTags:\n\n$tags";
+        "Title:\n\n$title\n\nDescription\n\n$description\n\nTags:\n\n$tags";
 
     try {
       if (_selectedFile != null) {
         await _selectedFile!.writeAsString(textContent);
+        SnackbarUtils.showSnackbar(
+          context,
+          Icons.check_circle,
+          "File saved successfully.",
+        );
       } else {
         final todayDate = getTodayDate();
         String metadataDirPath = _selectedDirectory;
@@ -48,6 +53,68 @@ class FileService {
         context,
         Icons.error,
         "File not saved!",
+      );
+    }
+  }
+
+  void loadFile(context) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    try {
+      if (result != null) {
+        File file = File(result.files.single.path!);
+        _selectedFile = file;
+
+        final fileContent = await file.readAsString();
+
+        final lines = fileContent.split('\n\n');
+        titleController.text = lines[1];
+        descriptionController.text = lines[3];
+        tagsController.text = lines[5];
+
+        SnackbarUtils.showSnackbar(
+          context,
+          Icons.upload_file,
+          "File uploaded.",
+        );
+      } else {
+        SnackbarUtils.showSnackbar(
+          context,
+          Icons.error_rounded,
+          "File not Selected!",
+        );
+      }
+    } catch (e) {
+      SnackbarUtils.showSnackbar(
+        context,
+        Icons.error_rounded,
+        "File not Selected!",
+      );
+    }
+  }
+
+  void newFile(context) {
+    _selectedFile = null;
+    titleController.clear();
+    tagsController.clear();
+    descriptionController.clear();
+    SnackbarUtils.showSnackbar(context, Icons.file_open, "New file created!");
+  }
+
+  void newDirectory(context) async {
+    try {
+      String? directory = await FilePicker.platform.getDirectoryPath();
+      _selectedDirectory = directory!;
+      _selectedFile = null;
+      SnackbarUtils.showSnackbar(
+        context,
+        Icons.folder,
+        "New folder selected.",
+      );
+    } catch (e) {
+      SnackbarUtils.showSnackbar(
+        context,
+        Icons.error_rounded,
+        "No folder selected!",
       );
     }
   }
